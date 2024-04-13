@@ -2,7 +2,7 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import "bootstrap/dist/css/bootstrap.min.css";
-import homeImage from "../../assets/home-img.png";
+import homeImage from "../../public/home-img.png";
 
 function App() {
   return (
