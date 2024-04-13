@@ -4,6 +4,10 @@
       "main": "src/nftMarketPlace_backend/main.mo",
       "type": "motoko"
     },
+      "nft": {
+        "main": "src/NFT/nft.mo",
+        "type": "motoko"
+      },
     "nftMarketPlace_frontend": {
       "dependencies": [
         "nftMarketPlace_backend"
