@@ -1,17 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import {nftMarketPlace_backend} from "../../../declarations/nftMarketPlace_backend"
+import { Principal } from "@dfinity/principal";
+import Item from "./Item";
 
 function Minter() {
   const { register, handleSubmit } = useForm();
+  const [nftPrincipal, setNFTPrincipal] = useState("");
+  const [loaderHidden, setLoaderHidden] = useState(true);
 
-  const onSubmit = async (data) => {
+  async function onSubmit(data){
+    setLoaderHidden(false);
     const name = data.name;
     const image = data.image[0];
     const imageData = await image.arrayBuffer() 
     const imageByteData = [...new Uint8Array(imageData)]
+
+    const newNFTID = await nftMarketPlace_backend.mint(imageByteData, name)
+    console.log(newNFTID.toText());
+    setNFTPrincipal(newNFTID);
+    setLoaderHidden(true);
+    
   };
+
+  if(nftPrincipal ==""){
   return (
     <div className="minter-container">
+      <div hidden={loaderHidden} className="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
       <h3 className="makeStyles-title-99 Typography-h3 form-Typography-gutterBottom">
         Create NFT
       </h3>
@@ -21,7 +41,7 @@ function Minter() {
       <form className="makeStyles-form-109" noValidate="" autoComplete="off">
         <div className="upload-container">
           <input
-            {...register("image", { required: true })          }
+            {...register("image", { required: true })}
             className="upload"
             type="file"
             accept="image/x-png,image/jpeg,image/gif,image/svg+xml,image/webp"
@@ -47,6 +67,18 @@ function Minter() {
       </form>
     </div>
   );
+}else{
+  return(
+    <div className="minter-container">
+      <h3 className="Typography-root makeStyles-title-99 Typography-h3 form-Typography-gutterBottom">
+        Minted!
+      </h3>
+      <div className="horizontal-center">
+        <Item id={nftPrincipal.toText()}/>
+      </div>
+    </div>
+  )
+}
 }
 
 export default Minter;
