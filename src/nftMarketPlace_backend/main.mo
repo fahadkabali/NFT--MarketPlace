@@ -65,9 +65,8 @@ actor nftmarketplace{
       if (Principal.equal(owner, msg.caller)) {
         
         let newListing : Listing = {
-          itemOwner = owner;
-          itemPrice = price;
-
+          Owner = owner;
+          Price = price;
         };
         mapOfListings.put(id, newListing);
         return "Success";
