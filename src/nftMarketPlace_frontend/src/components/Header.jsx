@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import logo from "/logo.png";
-import { BrowserRouter, Link , Switch, Route} from "react-router-dom";
+import { BrowserRouter, Link , Routes, Route} from "react-router-dom";
 import homeImage from "/home-img.png";
 import Gallery from "./Gallery";
 import Minter from "./Minter";
@@ -50,7 +50,7 @@ function Header() {
           </div>
         </header>
       </div>
-      <Switch>
+      <Routes>
         <Route exact path="/">
         <img className="bottom-space" src={homeImage} />
         </Route>
@@ -63,7 +63,7 @@ function Header() {
         <Route path="/collection">
           {userOwnerGallery}
         </Route>
-      </Switch>
+      </Routes>
     </BrowserRouter>
   );
 }
