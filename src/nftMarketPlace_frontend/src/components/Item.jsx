@@ -12,6 +12,7 @@ function Item(props) {
   const [image, setImage] = useState();
   const [button, setButton] = useState();
   const [priceInput, setPriceInput] =useState();
+  const [loaderHidden, setLoaderHidden] = useState(true)
 
   const id = props.id;
 
@@ -62,6 +63,7 @@ function Item(props) {
     // router.push(`/resell-nft?id=${id}`);
   }
   async function sellItem(){
+    setLoaderHidden(false)
     console.log("confirm clicked")
     const listingResult = await nftMarketPlace_backend.listItem(props.id, Number(price))
     console.log("listing:"+ listingResult)
@@ -69,6 +71,9 @@ function Item(props) {
       const nftMarketPlaceId = await nftMarketPlace_backend.getNftMarketPlaceCanisterID(props.id)
       const transferResult = await NFTActor.transferOwnership(nftMarketPlaceId)
       console.log("transfer:"+ transferResult)
+      if(transferResult=='Success'){
+        setLoaderHidden(true)
+      }
     }
   }
 
@@ -79,6 +84,12 @@ function Item(props) {
           className="disCardMedia-root makeStyles-image-19 disCardMedia-media disCardMedia-img"
           src={image}
         />
+        <div hidden={loaderHidden} className="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
         <div className="disCardContent-root">
           <h2 className="disTypography-root makeStyles-bodyText-24 disTypography-h5 disTypography-gutterBottom">
             {name}
