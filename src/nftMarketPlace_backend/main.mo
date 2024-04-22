@@ -77,5 +77,12 @@ actor nftmarketplace{
 
     public query func getNftMarketPlaceCanisterID() : async Principal {
       return Principal.fromActor(nftmarketplace);
-    }
+    };
+    public query func isListed(id: Principal) : async Bool {
+      if (mapOfListings.get(id) == null) {
+        return false;
+      } else {
+        return true;
+      }
+    };
 }

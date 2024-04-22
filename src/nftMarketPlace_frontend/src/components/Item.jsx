@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import logo from "/logo.png";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { idlFactory } from "../../../declarations/nft";
 import { Principal } from "@dfinity/principal";
@@ -13,6 +12,8 @@ function Item(props) {
   const [button, setButton] = useState();
   const [priceInput, setPriceInput] =useState();
   const [loaderHidden, setLoaderHidden] = useState(true)
+  const [blur, setBlur] = useState();
+  const [SellStatus, setSellStatus] = useState("")
 
   const id = props.id;
 
@@ -21,6 +22,7 @@ function Item(props) {
 
 
   agent.fetchRootKey();
+
   let NFTActor;
   async function loadNFT() {
     NFTActor = await Actor.createActor(idlFactory, {
@@ -39,14 +41,20 @@ function Item(props) {
     setName(name);
     setOwner(owner.toText());
     setImage(image);
-
-    setButton(<Button handleClick={handleSell} text={"sell"}/>)
+    const nftIsListed = await nftMarketPlace_backend.isListed(props.id);
+    if(nftIsListed){
+      setOwner("nft MarketPlace")
+      setBlur({filter:"blur(4px)"})
+      setSellStatus("LIsted")
+    }else{
+      setButton(<Button handleClick={handleSell} text={"Sell"}/>)
+    }
   }
 
   useEffect(() => {
     loadNFT();
   }, []);
-
+  setLIsted("Listing")
   let price
   function handleSell() {
     console.log("Sell NFT");
@@ -73,6 +81,10 @@ function Item(props) {
       console.log("transfer:"+ transferResult)
       if(transferResult=='Success'){
         setLoaderHidden(true)
+        setButton()
+        setPriceInput()
+        setOwner("NFT Market Place")
+        setSellStatus("Listed")
       }
     }
   }
@@ -83,7 +95,9 @@ function Item(props) {
         <img
           className="disCardMedia-root makeStyles-image-19 disCardMedia-media disCardMedia-img"
           src={image}
+          style={blur}
         />
+        
         <div hidden={loaderHidden} className="lds-ellipsis">
         <div></div>
         <div></div>
@@ -93,7 +107,7 @@ function Item(props) {
         <div className="disCardContent-root">
           <h2 className="disTypography-root makeStyles-bodyText-24 disTypography-h5 disTypography-gutterBottom">
             {name}
-            <span className="purple-text"></span>
+            <span className="purple-text">{SellStatus}</span>
           </h2>
           <p className="disTypography-root makeStyles-bodyText-24 disTypography-body2 disTypography-colorTextSecondary">
             Owner: {owner}
