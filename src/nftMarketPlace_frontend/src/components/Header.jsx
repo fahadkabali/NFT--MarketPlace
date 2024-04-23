@@ -10,11 +10,15 @@ import CURRENT_USER_ID from "../main";
 
 function Header() {
   const [userOwnerGallery, setUserOwnerGallery] = useState()
+  const [listingGalley, setListingGalley] = useState();
 
   async function getNFTs(){
     const userNFTIds = await nftMarketPlace_backend.getOwnedNFTs(CURRENT_USER_ID);
     console.log(userNFTIds);
-    setUserOwnerGallery(<Gallery title="My NFTs" ids={userNFTIds}/>)
+    setUserOwnerGallery(<Gallery title="My NFTs" ids={userNFTIds} role="collection"/>)
+
+    const listedNFTIds = await nftMarketPlace_backend.getListedNFTs();
+    setListingGalley(<Gallery title="Discover" ids={listedNFTIds} role="discover"/>)
   }
   useEffect(()=>{
     getNFTs();
@@ -55,7 +59,7 @@ function Header() {
         <img className="bottom-space" src={homeImage} />
         </Route>
         <Route path="/discover">
-          <h1>Discover</h1>
+          {listingGalley}
         </Route>
         <Route path="/minter">
           <Minter />

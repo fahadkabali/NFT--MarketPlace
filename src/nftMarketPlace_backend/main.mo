@@ -6,6 +6,7 @@ import HashMap "mo:base/HashMap";
 import List "mo:base/List";
 import Nat "mo:base/Nat";
 import Text "mo:base/Text";
+import Iter "mo:base/Iter";
 
 
 
@@ -53,6 +54,10 @@ actor nftmarketplace{
       };
     return List.toArray(userNFTs);
   };
+  public query func getListedNFTs() : async [Principal]{
+    let ids = Iter.toArray(mapOfListings.keys());
+    return ids;
+  };
 
 
   public shared(msg) func listItem(id: Principal, price: Nat) : async Text {
@@ -85,4 +90,11 @@ actor nftmarketplace{
         return true;
       }
     };
+    public query func getOriginalOwner(id:Principal) : async Principal{
+      var listing : Listing = switch(mapOfListings.get(id)){
+        case null return Principal.fromText("");
+        case (?result) result;
+      };
+      return listing.itemOwner;
+    }
 }

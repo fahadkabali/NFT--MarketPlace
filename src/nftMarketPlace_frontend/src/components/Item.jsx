@@ -4,6 +4,7 @@ import { idlFactory } from "../../../declarations/nft";
 import { Principal } from "@dfinity/principal";
 import Button from "./Button";
 import { nftMarketPlace_backend } from "../../../declarations/nftMarketPlace_backend";
+import CURRENT_USER_ID from "../main";
 
 function Item(props) {
   const [name, setName] = useState();
@@ -41,13 +42,21 @@ function Item(props) {
     setName(name);
     setOwner(owner.toText());
     setImage(image);
+
+    if(props.role=="collection"){
     const nftIsListed = await nftMarketPlace_backend.isListed(props.id);
-    if(nftIsListed){
-      setOwner("nft MarketPlace")
-      setBlur({filter:"blur(4px)"})
-      setSellStatus("LIsted")
-    }else{
-      setButton(<Button handleClick={handleSell} text={"Sell"}/>)
+      if(nftIsListed){
+        setOwner("nft MarketPlace")
+        setBlur({filter:"blur(4px)"})
+        setSellStatus("LIsted")
+      }else{
+        setButton(<Button handleClick={handleSell} text={"Sell"}/>)
+      }
+    }else if(props.role=="discover"){
+      const originalOwner = await nftMarketPlace_backend.getOriginalOwner(props.id)
+      if(originalOwner.toText() != CURRENT_USER_ID.toText()){
+        setButton(<Button handleClick={handleBuy} text={"Buy"}/>)
+      }
     }
   }
 
@@ -70,6 +79,11 @@ function Item(props) {
     setButton(<Button handleClick={sellItem} text={"confirm"}/>)
     // router.push(`/resell-nft?id=${id}`);
   }
+  function handleBuy() {
+    console.log("Buy NFT");
+    router.push(`/nft-detail?id=${id}`);
+  }
+ 
   async function sellItem(){
     setLoaderHidden(false)
     console.log("confirm clicked")
