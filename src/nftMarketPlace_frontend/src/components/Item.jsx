@@ -15,6 +15,7 @@ function Item(props) {
   const [loaderHidden, setLoaderHidden] = useState(true)
   const [blur, setBlur] = useState();
   const [SellStatus, setSellStatus] = useState("")
+  const [PriceLabel, setPriceLabel] = useState(""),
 
   const id = props.id;
 
@@ -58,6 +59,8 @@ function Item(props) {
         setButton(<Button handleClick={handleBuy} text={"Buy"}/>)
       }
     }
+    const price = await nftMarketPlace_backend.getListedNFTPrice(props.id);
+    setPriceLabel{(<PriceLabel sellPrice.toString())/>})
   }
 
   useEffect(() => {
@@ -102,6 +105,7 @@ function Item(props) {
       }
     }
   }
+
 
   return (
     <div className="disGrid-item">
