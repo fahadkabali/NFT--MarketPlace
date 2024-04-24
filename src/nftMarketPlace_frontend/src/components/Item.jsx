@@ -60,7 +60,7 @@ function Item(props) {
       }
     }
     const price = await nftMarketPlace_backend.getListedNFTPrice(props.id);
-    setPriceLabel{(<PriceLabel sellPrice.toString())/>})
+    setPriceLabel(<PriceLabel sellPrice= {price.toString()}/>)
   }
 
   useEffect(() => {
