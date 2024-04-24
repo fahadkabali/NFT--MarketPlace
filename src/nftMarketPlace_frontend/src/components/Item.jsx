@@ -5,6 +5,7 @@ import { Principal } from "@dfinity/principal";
 import Button from "./Button";
 import { nftMarketPlace_backend } from "../../../declarations/nftMarketPlace_backend";
 import CURRENT_USER_ID from "../main";
+import PriceLabel from "./PriceLabel";
 
 function Item(props) {
   const [name, setName] = useState();
@@ -115,7 +116,7 @@ function Item(props) {
           src={image}
           style={blur}
         />
-        
+        <PriceLabel/>
         <div hidden={loaderHidden} className="lds-ellipsis">
         <div></div>
         <div></div>
