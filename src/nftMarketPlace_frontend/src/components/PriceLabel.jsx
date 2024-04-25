@@ -2,8 +2,8 @@ import React from 'react'
 
 const PriceLabel = (props) => {
   return (
-    <div className=''>
-      
+    <div className="disButtonBase-root disChip-root makeStyles-price-23 disChip-outlined">
+      <span className="disChip-label">{props.sellPrice} FAD</span>
     </div>
   )
 }

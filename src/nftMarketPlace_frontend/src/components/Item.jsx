@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { idlFactory } from "../../../declarations/nft";
+import { idlFactory as tokenIdlFactory } from "../../../declarations/token";
 import { Principal } from "@dfinity/principal";
 import Button from "./Button";
 import { nftMarketPlace_backend } from "../../../declarations/nftMarketPlace_backend";
@@ -16,7 +17,8 @@ function Item(props) {
   const [loaderHidden, setLoaderHidden] = useState(true)
   const [blur, setBlur] = useState();
   const [SellStatus, setSellStatus] = useState("")
-  const [PriceLabel, setPriceLabel] = useState(""),
+  const [PriceLabel, setPriceLabel] = useState()
+  const [shouldDisplay, setDisplay] =useState(true)
 
   const id = props.id;
 
@@ -67,7 +69,7 @@ function Item(props) {
   useEffect(() => {
     loadNFT();
   }, []);
-  setLIsted("Listing")
+  // setLIsted("Listing")
   let price
   function handleSell() {
     console.log("Sell NFT");
@@ -83,12 +85,32 @@ function Item(props) {
     setButton(<Button handleClick={sellItem} text={"confirm"}/>)
     // router.push(`/resell-nft?id=${id}`);
   }
-  function handleBuy() {
-    console.log("Buy NFT");
-    router.push(`/nft-detail?id=${id}`);
+  async function handleBuy() {
+    display: shouldDisplay ? "inline" : "none"
+    setLoaderHidden(false);
+    const tokenActor = await Actor.createActor(tokenIdlFactory, {
+      agent,
+      canisterId: Principal.fromText("<REPLACE WITH YOUR TOKEN CANISTER ID>"),
+    });
+
+    const sellerId = await nftMarketPlace_backend.getOriginalOwner(props.id);
+    const itemPrice = await nftMarketPlace_backend.getListedNFTPrice(props.id);
+
+    const result = await tokenActor.transfer(sellerId, itemPrice);
+    if (result == "Success") {
+      const transferResult = await nftMarketPlace_backend.completePurchase(
+        props.id,
+        sellerId,
+        CURRENT_USER_ID
+      );
+      console.log("purchase: " + transferResult);
+      setLoaderHidden(true);
+      setDisplay(false);
+    }
   }
  
   async function sellItem(){
+    setBlur({filter:"blur(4px)"})
     setLoaderHidden(false)
     console.log("confirm clicked")
     const listingResult = await nftMarketPlace_backend.listItem(props.id, Number(price))
@@ -109,14 +131,13 @@ function Item(props) {
 
 
   return (
-    <div className="disGrid-item">
+    <div style={{display: shouldDisplay ? "inline" : "none"}}className="disGrid-item">
       <div className="disPaper-root disCard-root makeStyles-root-17 disPaper-elevation1 disPaper-rounded">
         <img
           className="disCardMedia-root makeStyles-image-19 disCardMedia-media disCardMedia-img"
           src={image}
           style={blur}
         />
-        <PriceLabel/>
         <div hidden={loaderHidden} className="lds-ellipsis">
         <div></div>
         <div></div>
@@ -124,6 +145,7 @@ function Item(props) {
         <div></div>
       </div>
         <div className="disCardContent-root">
+          {PriceLabel}
           <h2 className="disTypography-root makeStyles-bodyText-24 disTypography-h5 disTypography-gutterBottom">
             {name}
             <span className="purple-text">{SellStatus}</span>
