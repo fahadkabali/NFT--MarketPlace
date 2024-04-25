@@ -32,7 +32,7 @@ function Header() {
             <img className="header-logo-11" src={logo} />
             <div className="header-vertical-9"></div>
             <Link to ="/">
-              <h5 className="Typography-root header-logo-text">OpenD</h5>
+              <h5 className="Typography-root header-logo-text">NFT MARKETPLACE</h5>
             </Link>
             <div className="header-empty-6"></div>
             <div className="header-space-8"></div>

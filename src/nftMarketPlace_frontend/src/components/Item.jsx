@@ -90,7 +90,7 @@ function Item(props) {
     setLoaderHidden(false);
     const tokenActor = await Actor.createActor(tokenIdlFactory, {
       agent,
-      canisterId: Principal.fromText("<REPLACE WITH YOUR TOKEN CANISTER ID>"),
+      canisterId: Principal.fromText("bd3sg-teaaa-aaaaa-qaaba-cai"),
     });
 
     const sellerId = await nftMarketPlace_backend.getOriginalOwner(props.id);
